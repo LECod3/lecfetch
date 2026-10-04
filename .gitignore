@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Compilación de TypeScript
+dist/
+
+# Logs
+*.log
+
+# Editor / sistema
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
