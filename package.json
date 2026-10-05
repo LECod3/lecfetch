@@ -1,0 +1,37 @@
+{
+  "name": "lecfetch",
+  "version": "0.1.0",
+  "description": "A lightweight system information tool for Linux, built with TypeScript.",
+  "type": "module",
+  "bin": {
+    "lecfetch": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test"
+  },
+  "keywords": [
+    "neofetch",
+    "fastfetch",
+    "system-info",
+    "linux",
+    "cli"
+  ],
+  "author": "LECod3",
+  "license": "MIT",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.8.1",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.8.1",
+  "devDependencies": {
+    "@types/node": "26.6.3",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

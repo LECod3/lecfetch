@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    /* Language and environment.
+       "target" implies lib: ["ES2022"], so setting "lib" explicitly is redundant. */
+    "target": "ES2022",
+
+    /* Explicit list of automatic @types packages. "console", "process", etc.
+       live in @types/node, not in the language itself. */
+    "types": ["node"],
+
+    /* Module system: ESM, matching "type": "module" in package.json */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "verbatimModuleSyntax": true,
+
+    /* Type checking quality */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Emit */
+    "rootDir": "src",
+    "outDir": "dist",
+    "sourceMap": true,
+    "declaration": false,
+
+    /* Interop */
+    "skipLibCheck": true,
+    "isolatedModules": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "tests"]
+}
