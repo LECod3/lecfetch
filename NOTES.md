@@ -34,6 +34,7 @@ Machine: Linux Mint 22.3 (Zena), kernel 7.0.0-38-generic, Intel i5-10310U.
 - **Format:** plain text, single line. Example: `Gneisenau`.
 - **Equivalent to** `hostname`.
 - **Alternative:** `os.hostname()` in Node returns the same value.
+- **Verified on Node 24:** `os.hostname()` matches `/proc/sys/kernel/hostname`.
 
 ## CPU — `/proc/cpuinfo`
 
@@ -72,6 +73,13 @@ Machine: Linux Mint 22.3 (Zena), kernel 7.0.0-38-generic, Intel i5-10310U.
     a modern distro, but fall back to `MemFree + Cached + Buffers` if missing.
   - Strip the trailing `kB` unit before converting; some fields (like
     `HugePages_Total`) have **no unit** at all.
+- **Verified on Node 24:** `os.totalmem()` equals `MemTotal`, and
+  `os.freemem()` equals **`MemAvailable`** (not `MemFree`). Measured 12/12
+  samples matching `MemAvailable`, 0/12 matching `MemFree`.
+  - Earlier note said `freemem()` was closer to `MemFree` — that was wrong.
+  - Testing method that produced a false reading: comparing two separate reads
+    of `/proc/meminfo` at different instants. RAM changes between reads, so
+    compare against a **single** read, or sample repeatedly.
 
 ## Uptime — `/proc/uptime`
 
