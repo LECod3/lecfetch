@@ -1,62 +1,33 @@
-// lecfetch — Phase 2 MVP: system info via the Node.js `node:os` API.
-// Phase 3 will replace each of these values with a direct /proc or /etc read.
+import { get as getOs } from "./modules/os.js";
+import { get as getKernel } from "./modules/kernel.js";
+import { get as getHostname } from "./modules/hostname.js";
+import { get as getCpu } from "./modules/cpu.js";
+import { get as getMemory } from "./modules/memory.js";
+import { get as getUptime } from "./modules/uptime.js";
+import { get as getArch } from "./modules/arch.js";
+import { get as getShell } from "./modules/shell.js";
+import { get as getTerminal } from "./modules/terminal.js";
 
-import {
-  arch,
-  cpus,
-  freemem,
-  hostname,
-  release,
-  totalmem,
-  type,
-  uptime,
-} from "node:os";
-
-// Maps Node's arch names to the ones `uname -m` prints (what neofetch shows).
-const ARCH_ALIASES: Record<string, string> = {
-  x64: "x86_64",
-  arm64: "aarch64",
-  arm: "armv7l",
-  ia32: "i686",
-};
-
-// 1024 ** 3 = 1073741824: one gibibyte. Node reports bytes, humans read GiB.
-function formatBytes(bytes: number): string {
-  const gibibytes = bytes / 1024 ** 3;
-  return `${gibibytes.toFixed(1)} GiB`;
-}
-
-// 2237 seconds -> "37m", 7000 seconds -> "1h 56m".
-function formatUptime(seconds: number): string {
-  const totalMinutes = Math.floor(seconds / 60);
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-}
-
-// cpus() returns one entry per logical CPU; all of them share the same model,
-// so reading the first block is enough. The array may be empty on odd systems.
-function cpuName(cpuList: ReturnType<typeof cpus>): string {
-  const first = cpuList[0]; // noUncheckedIndexedAccess: CpuInfo | undefined
-  return first?.model.trim() || "unknown";
-}
-
-function buildRows(): Array<[string, string]> {
-  const cpuList = cpus();
-  const total = totalmem();
-  const free = freemem();
+async function buildRows(): Promise<Array<[string, string]>> {
+  const [os, kernel, hostname, cpu, memory, uptime] = await Promise.all([
+    getOs(),
+    getKernel(),
+    getHostname(),
+    getCpu(),
+    getMemory(),
+    getUptime(),
+  ]);
 
   return [
-    ["OS", type()],
-    ["Kernel", release()],
-    ["Hostname", hostname()],
-    ["CPU", `${cpuName(cpuList)} (${cpuList.length} logical)`],
-    // Verified on Node 24: freemem() reads MemAvailable (not MemFree), so this
-    // matches the accurate number already. Phase 3 still reads /proc/meminfo
-    // directly to drop the node:os dependency.
-    ["RAM", `${formatBytes(total - free)} / ${formatBytes(total)}`],
-    ["Uptime", formatUptime(uptime())],
-    ["Arch", ARCH_ALIASES[arch()] ?? arch()],
+    ["OS", os ?? "unknown"],
+    ["Kernel", kernel ?? "unknown"],
+    ["Hostname", hostname ?? "unknown"],
+    ["CPU", cpu ?? "unknown"],
+    ["RAM", memory ?? "unknown"],
+    ["Uptime", uptime ?? "unknown"],
+    ["Arch", getArch()],
+    ["Shell", getShell() ?? "unknown"],
+    ["Terminal", getTerminal() ?? "unknown"],
   ];
 }
 
@@ -70,4 +41,8 @@ function print(rows: Array<[string, string]>): void {
   }
 }
 
-print(buildRows());
+async function main(): Promise<void> {
+  print(await buildRows());
+}
+
+void main();
