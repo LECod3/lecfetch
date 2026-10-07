@@ -10,7 +10,7 @@
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "node --test"
+    "test": "tsx --test tests/*.test.ts"
   },
   "keywords": [
     "neofetch",
