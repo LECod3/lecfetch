@@ -150,6 +150,16 @@ Machine: Linux Mint 22.3 (Zena), kernel 7.0.0-38-generic, Intel i5-10310U.
 | Shell | `$SHELL` | env path | fallback: `/proc/<ppid>/` |
 | Terminal | `$TERM*` | env vars | `$TERM_PROGRAM`, `$COLORTERM` |
 
+## Code layout (Phase 4)
+
+- `src/index.ts` — thin orchestrator only: `console.log(render(await buildRows()))`.
+- `src/info.ts` — `buildRows()` decides which rows exist and their order.
+- `src/render.ts` — `render()` turns rows into the final aligned string (never
+  calls `console.log` itself, so it stays testable).
+- `src/modules/` — one data source per file, each exporting `get()`.
+- `tests/` — all tests live here (`*.test.ts`), with `tests/fixtures/` holding
+  static copies of real `/proc` and `/etc` files.
+
 ## Open questions for later phases
 
 - GPU: expected under `/sys/class/drm/` — not researched yet (Phase 4).
